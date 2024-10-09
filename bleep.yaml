@@ -4,7 +4,7 @@ jvm:
   name: graalvm-java17:22.3.1
 projects:
   bleep-plugin-publish:
-    dependencies: build.bleep::bleep-plugin-ci-release:${BLEEP_VERSION}
+    dependencies: build.bleep::bleep-plugin-ci-release:0.0.9
     extends: template-cross-all
 scripts:
   publish:
