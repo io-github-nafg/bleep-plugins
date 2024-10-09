@@ -9,7 +9,7 @@ projects:
 scripts:
   publish:
     main: io.github.nafg.bleep.plugins.publish.Publish
-    project: bleep-plugin-publish
+    project: bleep-plugin-publish@jvm3
 templates:
   template-common:
     platform:
