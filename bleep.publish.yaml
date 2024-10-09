@@ -1,0 +1,17 @@
+groupId: io.github.nafg.bleep-plugins
+projects:
+  - bleep-plugin-publish
+sonatype:
+  profileName: io.github.nafg
+  bundleName: bleep-plugins
+info:
+  description: Plugins for Bleep, a fast Scala build tool
+  homePage: https://github.com/io-github-nafg/bleep-plugins
+  developers:
+    - name: Naftoli Gugenheim
+      id: nafg
+      url: https://github.com/nafg
+  licenseInfo:
+    - name: Apache-2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0.txt
+      distribution: repo

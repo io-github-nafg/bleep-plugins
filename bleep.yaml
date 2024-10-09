@@ -1,0 +1,34 @@
+$schema: https://raw.githubusercontent.com/oyvindberg/bleep/master/schema.json
+$version: 0.0.9
+jvm:
+  name: graalvm-java17:22.3.1
+projects:
+  bleep-plugin-publish:
+    dependencies: build.bleep::bleep-plugin-ci-release:${BLEEP_VERSION}
+    extends: template-cross-all
+scripts:
+  publish:
+    main: io.github.nafg.bleep.plugins.publish.Publish
+    project: bleep-plugin-publish
+templates:
+  template-common:
+    platform:
+      name: jvm
+    scala:
+      options: -encoding utf8 -feature -unchecked
+      strict: true
+    source-layout: cross-pure
+  template-cross-all:
+    cross:
+      jvm213:
+        extends: template-scala-2
+      jvm3:
+        extends: template-scala-3
+    extends: template-common
+  template-scala-2:
+    scala:
+      options: -Xsource:3
+      version: 2.13.15
+  template-scala-3:
+    scala:
+      version: 3.3.4
