@@ -56,7 +56,7 @@ object Publish extends BleepScript("Publish") {
       }
     )
 
-    val packagedLibraries: SortedMap[model.CrossProjectName, PackagedLibrary] =
+    val packagedLibraries: SortedMap[CrossProjectName, PackagedLibrary] =
       packageLibraries(
         started,
         coordinatesFor = CoordinatesFor.Default(groupId = config.groupId, version = dynVer.version),
