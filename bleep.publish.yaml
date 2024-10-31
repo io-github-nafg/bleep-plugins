@@ -1,6 +1,7 @@
 groupId: io.github.nafg.bleep-plugins
 projects:
   - bleep-plugin-publish
+  - bleep-plugin-openapi-codegen-zio-http
 sonatype:
   profileName: io.github.nafg
   bundleName: bleep-plugins
