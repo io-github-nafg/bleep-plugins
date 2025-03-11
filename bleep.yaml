@@ -13,7 +13,7 @@ projects:
     - dev.zio::zio-json-yaml:0.7.3
     extends: template-cross-all
   bleep-plugin-publish:
-    dependencies: build.bleep::bleep-plugin-ci-release:0.0.11
+    dependencies: build.bleep::bleep-plugin-ci-release:0.0.12
     extends: template-cross-all
 scripts:
   publish:
