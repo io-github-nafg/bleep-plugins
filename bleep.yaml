@@ -5,7 +5,7 @@ jvm:
 projects:
   bleep-plugin-openapi-codegen-zio-http:
     dependencies:
-    - build.bleep::bleep-core:0.0.11
+    - build.bleep::bleep-core:0.0.12
     - com.lihaoyi::sourcecode:0.4.2
     - exclusions:
         com.lihaoyi: sourcecode_2.13
