@@ -12,6 +12,9 @@ projects:
       module: dev.zio::zio-http-gen:3.0.1
     - dev.zio::zio-json-yaml:0.7.3
     extends: template-cross-all
+  bleep-plugin-projects-graph:
+    dependencies: build.bleep::bleep-core:0.0.12
+    extends: template-cross-all
   bleep-plugin-publish:
     dependencies: build.bleep::bleep-plugin-ci-release:0.0.12
     extends: template-cross-all
@@ -19,6 +22,9 @@ scripts:
   publish:
     main: io.github.nafg.bleep.plugins.publish.Publish
     project: bleep-plugin-publish@jvm3
+  projectsGraph:
+    main: io.github.nafg.bleep.plugins.projectsgraph.ProjectsGraph
+    project: bleep-plugin-projects-graph@jvm3
 templates:
   template-common:
     platform:

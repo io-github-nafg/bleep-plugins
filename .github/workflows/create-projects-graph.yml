@@ -1,0 +1,18 @@
+name: Create projects graph
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  create-projects-graph:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bleep-build/bleep-setup-action@0.0.2
+      - run: bleep projectsGraph docs/projects-graph.md
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore: update projects graph"
+          title: "chore: update projects graph"
+          body: "Automated PR"
+          branch: "chore/update-projects-graph"
