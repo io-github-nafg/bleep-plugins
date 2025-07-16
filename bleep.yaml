@@ -18,6 +18,12 @@ projects:
   bleep-plugin-publish:
     dependencies: build.bleep::bleep-plugin-ci-release:0.0.12
     extends: template-cross-all
+  bleep-plugin-scoverage:
+    dependencies:
+      - build.bleep::bleep-core:0.0.12+22-04a4c037+20250715-1721-SNAPSHOT
+      - com.github.alexarchambault::case-app:2.1.0-M30
+      - org.scoverage::scalac-scoverage-reporter:2.3.0
+    extends: template-cross-all
 scripts:
   publish:
     main: io.github.nafg.bleep.plugins.publish.Publish
