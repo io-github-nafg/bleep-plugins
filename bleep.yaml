@@ -20,7 +20,7 @@ projects:
     extends: template-cross-all
   bleep-plugin-scoverage:
     dependencies:
-      - build.bleep::bleep-core:0.0.12+22-04a4c037+20250715-1721-SNAPSHOT
+      - build.bleep::bleep-core:0.0.12
       - com.github.alexarchambault::case-app:2.1.0-M30
       - org.scoverage::scalac-scoverage-reporter:2.3.0
     extends: template-cross-all
