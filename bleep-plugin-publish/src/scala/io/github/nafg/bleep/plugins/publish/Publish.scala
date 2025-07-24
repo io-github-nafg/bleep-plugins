@@ -9,9 +9,10 @@ import scala.annotation.tailrec
 import scala.collection.immutable.SortedMap
 
 import bleep.*
+import bleep.commands.PublishLocal
 import bleep.model.CrossProjectName
 import bleep.nosbt.InteractionService
-import bleep.packaging.{CoordinatesFor, PackagedLibrary, PublishLayout, packageLibraries}
+import bleep.packaging.{CoordinatesFor, ManifestCreator, PackagedLibrary, PublishLayout, packageLibraries}
 import bleep.plugin.cirelease.CiReleasePlugin
 import bleep.plugin.dynver.DynVerPlugin
 import bleep.plugin.pgp.PgpPlugin
@@ -29,9 +30,10 @@ object Publish extends BleepScript("Publish") {
       yaml.decode[PublishConfig](Files.readString(started.buildPaths.buildDir / "bleep.publish.yaml")).toTry.get
 
     val projectsToPublishName = config.projects.toSet
-    val projectsToPublish     = projectsToPublishName.compose[CrossProjectName](_.name.value)
+    val isProjectToPublish    = projectsToPublishName.compose[CrossProjectName](_.name.value)
+    val projectsToPublish     = started.build.explodedProjects.keys.filter(isProjectToPublish)
 
-    commands.compile(started.build.explodedProjects.keys.filter(projectsToPublish).toList)
+    commands.compile(projectsToPublish.toList)
 
     val dynVer = new DynVerPlugin(
       baseDirectory = started.buildPaths.buildDir.toFile,
@@ -70,7 +72,7 @@ object Publish extends BleepScript("Publish") {
       packageLibraries(
         started,
         coordinatesFor = CoordinatesFor.Default(groupId = config.groupId, version = version),
-        shouldInclude = projectsToPublish,
+        shouldInclude = isProjectToPublish,
         publishLayout = PublishLayout.Maven(info)
       )
 
@@ -115,7 +117,18 @@ object Publish extends BleepScript("Publish") {
     }
 
     args match {
-      case List() | List("--mode=sonatype-legacy")    => ciReleasePlugin(Sonatype.sonatypeLegacy).ciRelease(files)
+      case List("--mode=local")                       =>
+        commands.publishLocal(
+          PublishLocal.Options(
+            groupId = profileName,
+            version = version,
+            publishTarget = PublishLocal.LocalIvy,
+            projects = projectsToPublish.toArray,
+            manifestCreator = ManifestCreator.default
+          )
+        )
+      case List() | List("--mode=sonatype-legacy")    =>
+        ciReleasePlugin(Sonatype.sonatypeLegacy).ciRelease(files)
       case List("--mode=ossrh-staging")               =>
         val baseUrl = "https://ossrh-staging-api.central.sonatype.com"
 
@@ -206,7 +219,7 @@ object Publish extends BleepScript("Publish") {
 
       case _ =>
         logger.error("""Invalid arguments.
-            |Usage: bleep publish -- [--mode=[sonatype-legacy|ossrh-staging|portal-api:[USER_MANAGED|AUTOMATIC]]
+            |Usage: bleep publish -- [--mode=[local|sonatype-legacy|ossrh-staging|portal-api:[USER_MANAGED|AUTOMATIC]]
             |""".stripMargin)
         System.exit(2)
     }
