@@ -56,7 +56,11 @@ object Publish extends BleepScript("Publish") {
         Info.Developer(id, name, url)
       },
       publication = None,
-      scm = CiReleasePlugin.inferScmInfo,
+      scm = config.info.scm
+        .map { case PublishConfig.Info.Scm(url, connection, developerConnection) =>
+          Info.Scm(url, connection, developerConnection)
+        }
+        .orElse(CiReleasePlugin.inferScmInfo),
       licenseInfo = config.info.licenseInfo.map { case PublishConfig.Info.License(name, url, distribution, comments) =>
         Info.License(name, url, distribution, comments)
       }
