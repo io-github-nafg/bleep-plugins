@@ -17,3 +17,7 @@ info:
     - name: Apache-2.0
       url: https://www.apache.org/licenses/LICENSE-2.0.txt
       distribution: repo
+  scm:
+    url: https://github.com/io-github-nafg/bleep-plugins
+    connection: scm:git:https://github.com/io-github-nafg/bleep-plugins.git
+    developerConnection: scm:git:https://github.com/io-github-nafg/bleep-plugins.git
