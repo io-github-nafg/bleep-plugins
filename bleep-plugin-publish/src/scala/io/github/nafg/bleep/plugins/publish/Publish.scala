@@ -2,6 +2,7 @@ package io.github.nafg.bleep.plugins.publish
 
 import java.io.FileOutputStream
 import java.nio.file.Files
+import java.time.{Duration, Instant}
 import java.util.Base64
 import java.util.zip.{ZipEntry, ZipOutputStream}
 
@@ -12,7 +13,7 @@ import bleep.*
 import bleep.commands.PublishLocal
 import bleep.model.CrossProjectName
 import bleep.nosbt.InteractionService
-import bleep.packaging.{CoordinatesFor, ManifestCreator, PackagedLibrary, PublishLayout, packageLibraries}
+import bleep.packaging.*
 import bleep.plugin.cirelease.CiReleasePlugin
 import bleep.plugin.dynver.DynVerPlugin
 import bleep.plugin.pgp.PgpPlugin
@@ -139,7 +140,7 @@ object Publish extends BleepScript("Publish") {
             .post(
               uri"$baseUrl/manual/upload/defaultRepository/$profileName".addParams("publishing_type" -> "automatic")
             )
-        )
+        ).discard()
       case List(s"--mode=portal-api:$publishingType") =>
         CiReleasePlugin.setupGpg(processLogger(logger, "setupGpg"))
 
@@ -174,8 +175,11 @@ object Publish extends BleepScript("Publish") {
 
         logger.info("⏳ Waiting for validation...")
 
+        val startTime = Instant.now()
+        val interval  = if (System.console() == null) 30_000 else 10_000
+
         @tailrec
-        def pollUntilComplete(attempt: Int = 0): Unit = {
+        def pollUntilComplete(): Unit = {
           val json = ujson.read(
             sendSonatypeRequest(
               basicRequest
@@ -191,27 +195,26 @@ object Publish extends BleepScript("Publish") {
           }
 
           json("deploymentState").str match {
-            case "VALIDATED"            =>
+            case "VALIDATED" =>
               logger.info("✅ Deployment validated successfully!")
               logPurls()
               logger.info("💡 Ready for manual publish via Portal UI")
-            case "PUBLISHED"            =>
+            case "PUBLISHED" =>
               logger.info("🚀 Deployment published successfully!")
               logPurls()
-            case "FAILED"               =>
+            case "FAILED"    =>
               logger.error("❌ Deployment validation failed!")
               json("errors").obj.foreach { case (component, errorList) =>
                 logger.error(s"  ❌ $component:")
                 errorList.arr.foreach(error => logger.error(s"     • ${error.str}"))
               }
               sys.exit(1)
-            case state if attempt >= 30 =>
-              logger.error(s"❌ Deployment still $state after maximum attempts")
-              sys.exit(2)
-            case state                  =>
-              logger.info(s"📋 Status: $state (${attempt + 1}/30)")
-              Thread.sleep(5000)
-              pollUntilComplete(attempt + 1)
+            case state       =>
+              val elapsed = Duration.between(startTime, Instant.now())
+              logger.info(s"🔄 Status: $state (${elapsed.toMinutes}m${elapsed.toSecondsPart}s)")
+
+              Thread.sleep(interval)
+              pollUntilComplete()
           }
         }
 
