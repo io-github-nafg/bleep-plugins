@@ -8,6 +8,7 @@ import java.util.zip.{ZipEntry, ZipOutputStream}
 
 import scala.annotation.tailrec
 import scala.collection.immutable.SortedMap
+import scala.concurrent.duration.DurationInt
 
 import bleep.*
 import bleep.commands.PublishLocal
@@ -176,7 +177,7 @@ object Publish extends BleepScript("Publish") {
         logger.info("⏳ Waiting for validation...")
 
         val startTime = Instant.now()
-        val interval  = if (System.console() == null) 30_000 else 10_000
+        val interval  = if (System.console() == null) 30.seconds else 10.seconds
 
         @tailrec
         def pollUntilComplete(): Unit = {
@@ -213,7 +214,7 @@ object Publish extends BleepScript("Publish") {
               val elapsed = Duration.between(startTime, Instant.now())
               logger.info(s"🔄 Status: $state (${elapsed.toMinutes}m${elapsed.toSecondsPart}s)")
 
-              Thread.sleep(interval)
+              Thread.sleep(interval.toMillis)
               pollUntilComplete()
           }
         }
