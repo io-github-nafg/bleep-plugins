@@ -6,3 +6,10 @@ hs_err_pid*
 
 /.bleep/
 /.bsp/
+
+/.idea/libraries
+/.idea/modules
+
+.metals/
+
+.aider*
