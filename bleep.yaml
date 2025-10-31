@@ -10,7 +10,7 @@ projects:
     - exclusions:
         com.lihaoyi: sourcecode_2.13
       module: dev.zio::zio-http-gen:3.5.1
-    - dev.zio::zio-json-yaml:0.7.44
+    - dev.zio::zio-json-yaml:0.7.45
     extends: template-cross-all
   bleep-plugin-projects-graph:
     dependencies: build.bleep::bleep-core:0.0.13
