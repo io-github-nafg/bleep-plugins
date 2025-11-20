@@ -7,7 +7,7 @@ jobs:
   create-projects-graph:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: bleep-build/bleep-setup-action@0.0.2
       - run: bleep projectsGraph docs/projects-graph.md
       - uses: peter-evans/create-pull-request@v7
