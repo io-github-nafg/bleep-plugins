@@ -5,7 +5,7 @@ jvm:
 projects:
   bleep-plugin-openapi-codegen-zio-http:
     dependencies:
-    - build.bleep::bleep-core:0.0.13
+    - build.bleep::bleep-core:0.0.14
     - com.lihaoyi::sourcecode:0.4.4
     - exclusions:
         com.lihaoyi: sourcecode_2.13
@@ -13,14 +13,14 @@ projects:
     - dev.zio::zio-json-yaml:0.7.45
     extends: template-cross-all
   bleep-plugin-projects-graph:
-    dependencies: build.bleep::bleep-core:0.0.13
+    dependencies: build.bleep::bleep-core:0.0.14
     extends: template-cross-all
   bleep-plugin-publish:
     dependencies: build.bleep::bleep-plugin-ci-release:0.0.13
     extends: template-cross-all
   bleep-plugin-scoverage:
     dependencies:
-    - build.bleep::bleep-core:0.0.13
+    - build.bleep::bleep-core:0.0.14
     - com.github.alexarchambault::case-app:2.1.0
     - org.scoverage::scalac-scoverage-reporter:2.5.1
     extends: template-cross-all
