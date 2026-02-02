@@ -16,7 +16,9 @@ projects:
     dependencies: build.bleep::bleep-core:0.0.14
     extends: template-cross-all
   bleep-plugin-publish:
-    dependencies: build.bleep::bleep-plugin-ci-release:0.0.14
+    dependencies:
+    - build.bleep::bleep-plugin-ci-release:0.0.14
+    - com.github.alexarchambault::case-app:2.1.0
     extends: template-cross-all
   bleep-plugin-scoverage:
     dependencies:
