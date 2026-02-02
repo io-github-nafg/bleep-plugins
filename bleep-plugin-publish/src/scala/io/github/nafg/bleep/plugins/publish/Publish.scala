@@ -34,22 +34,23 @@ import sttp.model.Header
 object Publish extends BleepScript("Publish") {
   sealed trait Mode
   object Mode {
-    case object Local extends Mode
+    case class Local(fullVersion: Boolean) extends Mode
     case object SonatypeLegacy extends Mode
     case object OssrhStaging extends Mode
     case class PortalApi(publishingType: String) extends Mode
 
     implicit val argParser: ArgParser[Mode] = SimpleArgParser.from("mode") {
-      case "local"                       => Right(Local)
-      case "sonatype-legacy"             => Right(SonatypeLegacy)
-      case "ossrh-staging"               => Right(OssrhStaging)
+      case "local"              => Right(Local(fullVersion = false))
+      case "local:full-version" => Right(Local(fullVersion = true))
+      case "sonatype-legacy"    => Right(SonatypeLegacy)
+      case "ossrh-staging"      => Right(OssrhStaging)
       case s"portal-api:$publishingType" => Right(PortalApi(publishingType))
-      case other                         => Left(Error.MalformedValue("mode", s"unknown mode: $other"))
+      case other                => Left(Error.MalformedValue("mode", s"unknown mode: $other"))
     }
   }
 
   case class PublishOptions(
-    @HelpMessage("Publishing mode: local, sonatype-legacy, ossrh-staging, or portal-api:TYPE")
+    @HelpMessage("Publishing mode: local[:full-version], sonatype-legacy, ossrh-staging, or portal-api:TYPE")
     @ValueDescription("mode")
     mode: Option[Mode] = None
   )
@@ -153,11 +154,19 @@ object Publish extends BleepScript("Publish") {
       }
 
       options.mode.getOrElse(Mode.SonatypeLegacy) match {
-        case Mode.Local                    =>
+        case Mode.Local(fullVersion)        =>
+          val localVersion =
+            if (fullVersion) version
+            else
+              dynVer.dynverGitDescribeOutput match {
+                case Some(out) => out.ref.dropPrefix + "-SNAPSHOT"
+                case None      => "0.0.0-SNAPSHOT"
+              }
+          logger.info(s"Local publish version: $localVersion")
           bleepCommands.publishLocal(
             PublishLocal.Options(
               groupId = config.groupId,
-              version = version,
+              version = localVersion,
               publishTarget = PublishLocal.LocalIvy,
               projects = projectsToPublish.toArray,
               manifestCreator = ManifestCreator.default
