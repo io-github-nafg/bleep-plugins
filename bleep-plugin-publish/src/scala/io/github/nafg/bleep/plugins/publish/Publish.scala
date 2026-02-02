@@ -122,7 +122,7 @@ object Publish extends BleepScript("Publish") {
       case List("--mode=local")                       =>
         commands.publishLocal(
           PublishLocal.Options(
-            groupId = profileName,
+            groupId = config.groupId,
             version = version,
             publishTarget = PublishLocal.LocalIvy,
             projects = projectsToPublish.toArray,
