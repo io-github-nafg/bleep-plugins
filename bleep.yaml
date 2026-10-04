@@ -18,12 +18,12 @@ projects:
   bleep-plugin-publish:
     dependencies:
     - build.bleep::bleep-plugin-ci-release:0.0.14
-    - com.github.alexarchambault::case-app:2.1.0
+    - com.github.alexarchambault::case-app:2.1.1
     extends: template-cross-all
   bleep-plugin-scoverage:
     dependencies:
     - build.bleep::bleep-core:0.0.14
-    - com.github.alexarchambault::case-app:2.1.0
+    - com.github.alexarchambault::case-app:2.1.1
     - org.scoverage::scalac-scoverage-reporter:2.5.2
     extends: template-cross-all
 scripts:
